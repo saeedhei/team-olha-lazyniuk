@@ -1,4 +1,4 @@
-import {User}  from '../../infrastructure/models/User.js'; // Импорт модели User
+import { UserModel } from '../../../domain/users/schemas/userSchema.js'; // Импорт модели User
 
 export const Mutation = {
   createUser: async (
@@ -10,7 +10,6 @@ export const Mutation = {
       email,
       firstName,
       lastName,
-     
     }: {
       userName: string;
       password: string;
@@ -18,29 +17,26 @@ export const Mutation = {
       email: string;
       firstName: string;
       lastName: string;
-      
     },
   ) => {
-      const existingUserByEmail = await User.findOne({ email });
-      const existingUserByUserName = await User.findOne({ userName });
+    const existingUserByEmail = await UserModel.findOne({ email });
+    const existingUserByUserName = await UserModel.findOne({ userName });
 
-      if (existingUserByEmail) {
-        throw new Error('Invalid credentials.');
-      }
-      if (existingUserByUserName) {
-        throw new Error('Invalid credentials.');
-      }
-    const newUser = new User({
+    if (existingUserByEmail) {
+      throw new Error('Invalid credentials.');
+    }
+    if (existingUserByUserName) {
+      throw new Error('Invalid credentials.');
+    }
+    const newUser = new UserModel({
       userName,
       password,
       phonNumber,
       email,
       firstName,
       lastName,
-      
     });
 
-   
     try {
       const savedUser = await newUser.save();
       return savedUser;

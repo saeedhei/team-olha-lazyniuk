@@ -1,6 +1,5 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 
-// Define IUser interface (this is for Mongoose)
 export interface IUser extends Document {
   userName: string;
   password: string;
@@ -8,10 +7,11 @@ export interface IUser extends Document {
   phoneNumber?: string;
   firstName: string;
   lastName: string;
-  role?: 'admin' | 'user';
+  role: 'admin' | 'user';
+  languagePreferences: string; // Interface language FE
+  learningProgress: { cardId: Types.ObjectId; status: 'learning' | 'learned' }[];
 }
 
-// Mongoose schema definition
 const userSchema = new Schema<IUser>(
   {
     userName: { type: String, required: true, trim: true, minlength: 4, maxlength: 20 },
@@ -20,10 +20,16 @@ const userSchema = new Schema<IUser>(
     phoneNumber: { type: String, trim: true },
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
-    role: { type: String, required: true, default: 'user' },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    languagePreferences: { type: String, default: 'de' }, // Interface language
+    learningProgress: [
+      {
+        cardId: { type: Schema.Types.ObjectId, ref: 'Card' },
+        status: { type: String, enum: ['learning', 'learned'], default: 'learning' },
+      },
+    ],
   },
   { timestamps: true },
 );
 
-// Export Mongoose model (not the User domain model)
 export const UserModel = model<IUser>('User', userSchema);
