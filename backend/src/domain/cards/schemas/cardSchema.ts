@@ -1,30 +1,56 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-type Translation = {
-  [key: string]: string; // Support multiple languages
-};
+type Translation = { language: string; text: string };
 
 export interface ICard extends Document {
   word: string;
   transcription?: string;
-  translation: Translation;
-  example?: Translation;
+  translation: Translation[];
+  example?: Translation[];
   audioUrl?: string;
-  category: Types.ObjectId;
+  category: CategoryName;
   difficulty: 'easy' | 'medium' | 'hard';
-  isLearned: boolean;
 }
+
+type CategoryName =
+  | 'verbs'
+  | 'nouns'
+  | 'adjectives'
+  | 'adverbs'
+  | 'pronouns'
+  | 'prepositions'
+  | 'conjunctions'
+  | 'interjections'
+  | 'phrases';
 
 const cardSchema = new Schema<ICard>(
   {
-    word: { type: String, required: true },
-    transcription: { type: String }, // Phonetic spelling of the word
-    translation: { type: Map, of: String, required: true }, // Support multiple languages
-    example: { type: Map, of: String }, // Support multiple languages
-    audioUrl: { type: String }, // Link to audio pronunciation
-    category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
+    word: { type: String, required: true, unique:true },
+    transcription: { type: String },
+    translation: {
+      type: [{ language: String, text: String }],
+      required: true,
+    },
+    example: {
+      type: [{ language: String, text: String }],
+    },
+    audioUrl: { type: String },
+    category: {
+      type: String,
+      enum: [
+        'verbs',
+        'nouns',
+        'adjectives',
+        'adverbs',
+        'pronouns',
+        'prepositions',
+        'conjunctions',
+        'interjections',
+        'phrases',
+      ],
+      required: true,
+    },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'medium' },
-    isLearned: { type: Boolean, default: false }, // Mark the cards you've studied
   },
   { timestamps: true },
 );

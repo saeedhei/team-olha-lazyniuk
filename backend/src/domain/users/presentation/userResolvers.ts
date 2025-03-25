@@ -6,35 +6,12 @@ export const resolvers = {
     getUser: async (_: any, { id }: { id: string }): Promise<User | null> => {
       // Use Mongoose to find the user by ID
       const userDoc = await UserModel.findById(id).exec();
-      return userDoc
-        ? new User(
-            userDoc.id,
-            userDoc.userName,
-            userDoc.email,
-            userDoc.firstName,
-            userDoc.lastName,
-            userDoc.password,
-            userDoc.phoneNumber,
-            userDoc.role,
-          )
-        : null;
+        return userDoc ? User.fromMongoDocument(userDoc) : null;
     },
     getUsers: async (): Promise<User[]> => {
       // Fetch all users and map them to domain models
       const users = await UserModel.find().exec();
-      return users.map(
-        (userDoc) =>
-          new User(
-            userDoc.id,
-            userDoc.userName,
-            userDoc.email,
-            userDoc.firstName,
-            userDoc.lastName,
-            userDoc.password,
-            userDoc.phoneNumber,
-            userDoc.role,
-          ),
-      );
+      return users.map((userDoc) => User.fromMongoDocument(userDoc));
     },
   },
   Mutation: {
@@ -43,16 +20,7 @@ export const resolvers = {
       const userDoc = new UserModel(args);
       await userDoc.save();
       // Return domain User object
-      return new User(
-        userDoc.id,
-        userDoc.userName,
-        userDoc.email,
-        userDoc.firstName,
-        userDoc.lastName,
-        userDoc.password,
-        userDoc.phoneNumber,
-        userDoc.role,
-      );
+      return User.fromMongoDocument(userDoc);
     },
   },
 };

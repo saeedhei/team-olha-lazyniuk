@@ -1,13 +1,21 @@
 import { gql } from 'graphql-tag';
 
-export const typeDefs = gql`
+export const userTypeDefs = gql`
   type User {
     id: ID!
     userName: String!
     email: String!
     firstName: String!
     lastName: String!
+    phoneNumber: String
     role: String!
+    languagePreferences: String!
+    learningProgress: [LearningProgress!]!
+  }
+
+  type LearningProgress {
+    cardId: ID!
+    status: String!
   }
 
   type Query {
@@ -23,6 +31,7 @@ export const typeDefs = gql`
       lastName: String!
       password: String!
       role: String!
+      languagePreferences: String!
     ): User!
   }
 `;
