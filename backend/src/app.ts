@@ -5,8 +5,10 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 // import { typeDefs } from './graphql/schema.js';
 // import { resolvers } from './graphql/resolvers.js';
-import { typeDefs } from './domain/users/presentation/userSchema.js';
-import { resolvers } from './domain/users/presentation/userResolvers.js';
+// import { typeDefs } from './domain/users/presentation/userSchema.js';
+// import { resolvers } from './domain/users/presentation/userResolvers.js';
+import { typeDefs } from './graphql/typeDefs.js';
+import { resolvers } from './graphql/resolvers.js';
 // import { typeDefs, resolvers } from './graphql/index.js';
 import { connectToDatabase } from './infrastructure/database/connections.js';
 async function startApolloServer() {
